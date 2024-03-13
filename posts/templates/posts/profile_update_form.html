@@ -1,0 +1,44 @@
+{% extends "posts_base/base_with_navbar.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}프로필 수정 | 펜싱{% endblock title %}
+
+
+<form method="post" enctype="multipart/form-data" autocomplete="off">
+    {% csrf_token %}
+    <div class="profile">
+      <div class="profile-pic cp-avatar large" style="background-image: url('{{ user.profile_pic.url }}')"></div>
+      <div class="file">
+        {{ form.profile_pic }}
+      </div>
+    </div>
+    <div class="nickname">
+      {{ form.name|add_class:"cp-input"|add_error_class:"error"|attr:"placeholder:이름" }}
+      {% for error in form.name.errors %}
+        <div class="error-message">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="content">
+      {{ form.student_number|add_class:"cp-input"|add_error_class:"error"|attr:"placeholder:학번" }}
+      {% for error in form.student_number.errors %}
+        <div class="error-message">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="content">
+      {{ form.major|add_class:"cp-input"|add_error_class:"error"|attr:"placeholder:학과" }}
+      {% for error in form.major.errors %}
+        <div class="error-message">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="content">
+      {{ form.join_year|add_class:"cp-input"|add_error_class:"error"|attr:"placeholder:입부년도" }}
+      {% for error in form.join_year.errors %}
+        <div class="error-message">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="buttons">
+      <a class="cp-button secondary cancel" href="{% url 'profile' user.id %}">취소</a>
+      <button class="cp-button" type="submit">완료</button>
+    </div>
+  </form>

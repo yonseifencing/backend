@@ -1,0 +1,30 @@
+{% extends "posts_base/base_with_navbar.html" %}
+
+{% load static %}
+
+{% block title %}{{ profile_user.name }} | 연펜{% endblock title %}
+
+{% block content %}
+<main class="site-body">
+  <div class="profile-header">
+    <div class="content max-content-width">
+      <div class="cp-avatar large profile-pic" style="background-image: url('{{ profile_user.profile_pic.url }}')"></div>
+      <div class="info">
+        <h1 class="username">{{ profile_user.name}}</h1>
+        <h1>{{ profile_user.student_number|slice:"2:4" }}학번</h1>
+        <h1>{{ profile_user.major}}</h1>
+       
+      
+        {% if profile_user == user %}
+         
+        <a class="edit" href="{% url 'profile_edit' %}">
+            프로필 수정
+          </a>
+
+
+         
+        
+
+       {% endif %}
+
+{% endblock content  %}

@@ -1,0 +1,27 @@
+{% extends "posts_base/base_with_navbar.html" %}
+
+{% load widget_tweaks %}
+{% load static%}
+{% block title %}프로필 수정 | 연세{% endblock title %}
+
+{% block content %}
+<main class="profile-form">
+  <form method="post" enctype="multipart/form-data" autocomplete="off">
+    {% csrf_token %}
+    <div class="profile">
+      <div class="profile-pic cp-avatar large" style="background-image: url('{{ user.user_pic.url }}')"></div>
+      <div class="file">
+        {{ form.user_pic }}
+      </div>
+    </div>
+    
+    <div class="buttons">
+        <a class="cp-button secondary cancel" href="{% url 'profile' user.id %}">취소</a>
+        <button class="cp-button" type="submit">완료</button>
+    </div>
+  </form>
+  <a class="edit" href="{% url 'account_change_password' %}">
+    비밀번호 변경
+  </a>
+</main>
+{% endblock content %}
