@@ -5,9 +5,10 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey,GenericRelation
 from datetime import date
+from django.contrib.auth.models import (BaseUserManager,AbstractBaseUser,UserManager)
 
 # 여기다가 쓰고 그냥 다른 html에 연결 하면 될 듯 ?
-class User(AbstractUser):
+class User(AbstractBaseUser):
     name = models.CharField(
         max_length=10,
         
@@ -40,13 +41,53 @@ class User(AbstractUser):
     awards = models.CharField(
         max_length=9,
     )
+    email = models.EmailField(max_length=254,verbose_name='email', unique=True)
+    is_active = models.BooleanField(default =True)
+    is_admin = models.BooleanField(default=False)
+    objects = UserManager()
+    USERNAME_FIELD ='email'
+    REQUIRED_FIELDS= ['student_number']
+    
     def __str__(self):
         return self.email # 이거 아마 이메일로 매칭이 되는것일껄?
+    def has_perm(self, perm, obj=None):
+        return True
 
+    def has_module_perms(self, app_label):
+        return True
 
+    @property
+    def is_staff(self):
+        return self.is_admin
 
-
-
-    
+   
 class attendance(models.Model): # 출석 부분 
     attendant = models.ForeignKey(User, on_delete=models.CASCADE,related_name='attendants')
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, date_of_birth, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model(
+            email=self.normalize_email(email),
+            date_of_birth=date_of_birth,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+    def create_superuser(self, email, date_of_birth, password):
+        user = self.create_user(
+            email,
+            password=password,
+            date_of_birth=date_of_birth,
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+
+
+

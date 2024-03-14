@@ -4,8 +4,33 @@ from django.views.generic import (
     CreateView ,ListView,DetailView,UpdateView,DeleteView,RedirectView,View)
 from django.urls import reverse
 from .models import User
-from .forms import ProfileForm 
+from .forms import ProfileForm ,UserCreationForm
 from allauth.account.views import PasswordChangeView
+from django.contrib.auth.views import LoginView
+from .forms import UserCreationForm
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            email = form.cleaned_data.get('email') 
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(request, email=email, password=raw_password)  
+            if user is not None:
+                login(request, user)
+                return redirect('profile-update')  # 회원가입 성공 시 이동할 URL
+        else:
+            # 폼 유효성 검사 실패 시 오류 메시지를 포함하여 다시 렌더링
+            messages.error(request, '회원가입에 실패했습니다. 입력한 정보를 다시 확인해주세요.')
+    else:
+        form = UserCreationForm()
+    return render(request, 'account/signup.html', {'form': form})
+
+
 
 class IndexView(View):
     def get(self, request): 

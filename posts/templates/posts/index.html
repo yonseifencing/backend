@@ -1,8 +1,19 @@
 {% extends "posts_base/base_with_navbar.html" %}
+{% block title %}메인페이지| 펜싱{% endblock title %}
 
 {% load static %}
 {% block content %}
-
+<body>
+    <h1>Welcome to my website</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'signup' %}">회원가입</a></li>
+            <li><a href="{% url 'login' %}">로그인</a></li>
+        </ul>
+    </nav>
+    <!-- 추가적인 내용 -->
+</body>
+</html>
 {% endblock content %}
 {% block js %}
 
