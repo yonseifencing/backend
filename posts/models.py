@@ -7,6 +7,34 @@ from django.contrib.contenttypes.fields import GenericForeignKey,GenericRelation
 from datetime import date
 from django.contrib.auth.models import (BaseUserManager,AbstractBaseUser,UserManager)
 
+
+
+from django.db import models
+from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model(
+            email=self.normalize_email(email),
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email,  password):
+        user = self.create_user(
+            email,
+            password=password,
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
 # 여기다가 쓰고 그냥 다른 html에 연결 하면 될 듯 ?
 class User(AbstractBaseUser):
     name = models.CharField(
@@ -43,10 +71,10 @@ class User(AbstractBaseUser):
     )
     email = models.EmailField(max_length=254,verbose_name='email', unique=True)
     is_active = models.BooleanField(default =True)
+
     is_admin = models.BooleanField(default=False)
     objects = UserManager()
     USERNAME_FIELD ='email'
-    REQUIRED_FIELDS= ['student_number']
     
     def __str__(self):
         return self.email # 이거 아마 이메일로 매칭이 되는것일껄?
@@ -63,31 +91,6 @@ class User(AbstractBaseUser):
    
 class attendance(models.Model): # 출석 부분 
     attendant = models.ForeignKey(User, on_delete=models.CASCADE,related_name='attendants')
-
-
-class UserManager(BaseUserManager):
-    def create_user(self, email, date_of_birth, password=None):
-        if not email:
-            raise ValueError('Users must have an email address')
-
-        user = self.model(
-            email=self.normalize_email(email),
-            date_of_birth=date_of_birth,
-        )
-
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-    def create_superuser(self, email, date_of_birth, password):
-        user = self.create_user(
-            email,
-            password=password,
-            date_of_birth=date_of_birth,
-        )
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
-
 
 
 
