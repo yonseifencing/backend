@@ -27,7 +27,7 @@ DEBUG = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*'] #20240318:Allow Any Hosts
 
 
 # Application definition
